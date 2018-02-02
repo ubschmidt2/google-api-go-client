@@ -450,6 +450,17 @@ func (a *API) jsonBytes() []byte {
 			}
 		} else {
 			slurp = slurpURL(a.DiscoveryURL())
+			// Make sure that keys are sorted by re-marshalling.
+			d := make(map[string]interface{})
+			json.Unmarshal(slurp, &d)
+			if err != nil {
+				log.Fatal(err)
+			}
+			var err error
+			slurp, err = json.Marshal(d)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 		a.forceJSON = slurp
 	}
